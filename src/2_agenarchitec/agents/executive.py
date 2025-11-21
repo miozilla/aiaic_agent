@@ -1,0 +1,82 @@
+# Import ADK Component
+from google.adk.agents import Agent, ParallelAgent, SequentialAgent
+from google.adk.tools import google_search
+
+print("✅ ADK components (executive) imported successfully.")
+
+def build_executive_system():
+
+    # Tech Researcher: Focuses on AI and ML trends.
+    tech = Agent(
+        name="TechResearcher",
+        model="gemini-2.5-flash-lite",
+        instruction="Research AI/ML trends (100 words).",
+        tools=[google_search],
+        output_key="tech_research", # The result of this agent will be stored in the session state with this key.
+    )
+    print("✅ tech_researcher created.")
+
+    # Health Researcher: Focuses on medical breakthroughs.
+    health = Agent(
+        name="HealthResearcher",
+        model="gemini-2.5-flash-lite",
+        instruction="Research medical breakthroughs (100 words).",
+        tools=[google_search],
+        output_key="health_research", # The result will be stored with this key.
+    )
+    print("✅ health_researcher created.")
+
+    # Finance Researcher: Focuses on fintech trends.
+    finance = Agent(
+        name="FinanceResearcher",
+        model="gemini-2.5-flash-lite",
+        instruction="Research fintech trends (100 words).",
+        tools=[google_search],
+        output_key="finance_research", # The result will be stored with this key.
+    )
+    print("✅ finance_researcher created.")
+
+    # The AggregatorAgent runs *after* the parallel step to synthesize the results.
+    '''
+    # Explicit Instructions
+    instruction="""Combine these three research findings into a single executive summary:
+
+    **Technology Trends:**
+    {tech_research}
+    
+    **Health Breakthroughs:**
+    {health_research}
+    
+    **Finance Innovations:**
+    {finance_research}
+    
+    Your summary should highlight common themes, surprising connections, and the most important key takeaways from all three reports. The final summary should be around 200 words.""",
+    output_key="executive_summary", 
+    '''
+    aggregator = Agent(
+        name="AggregatorAgent",
+        model="gemini-2.5-flash-lite",
+        instruction="Combine {tech_research}, {health_research}, {finance_research} into 200-word executive summary.",
+        output_key="executive_summary", # This will be the final output of the entire system.
+    )
+    print("✅ aggregator_agent created.")
+
+    # The ParallelAgent runs all its sub-agents simultaneously.
+    parallel_team = ParallelAgent(
+        name="ParallelResearchTeam",
+        sub_agents=[tech, health, finance],
+    )
+
+    # This SequentialAgent defines the high-level workflow: run the parallel team first, then run the aggregator.
+    '''
+    root_agent = SequentialAgent(
+        name="ResearchSystem",
+        sub_agents=[parallel_research_team, aggregator_agent],
+    )
+
+    return root_agent
+    '''
+    return SequentialAgent(
+        name="ResearchSystem",
+        sub_agents=[parallel_team, aggregator],
+    )
