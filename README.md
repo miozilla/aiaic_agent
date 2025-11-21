@@ -1,5 +1,5 @@
 # aiaic_agent 🧑‍🏭🕸️🏌️
-aiaic_agent : AI Agent # Agentic Architecture # LLM # Kaggle # ADK # Prompt # Action
+aiaic_agent : AI Agent # Agentic Architecture # Agent # Kaggle # ADK # Prompt # Action
 
 ## Objective
 - Explore foundation concept of AI Agent and Agentic Architecture
